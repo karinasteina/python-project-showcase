@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trakie Lēcieni</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #222; }
+  canvas { background: rgb(232,158,158); display: block; touch-action: none; }
+  #hint { position: fixed; bottom: 10px; color: #eee; font-family: Arial, sans-serif; font-size: 13px; }
+</style>
+</head>
+<body>
+<canvas id="game" width="800" height="800"></canvas>
+<div id="hint">Bultiņas/A-D — kustība · SPACE — lēkt (dubultlēciens) · R — restarts · 1 — nākamais līmenis</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const dino = new Image();
+dino.src = "Dino1.png";
+const leciensSkana = new Audio("leciens.mp3");
+const fonaMuzika = new Audio("fona_muzika.mp3");
+fonaMuzika.loop = true;
+fonaMuzika.volume = 0.1;
+
+let audioStarted = false;
+function startAudioOnce() {
+  if (!audioStarted) {
+    audioStarted = true;
+    fonaMuzika.play().catch(() => {});
+  }
+}
+
+let kritieni = 0, limeni = 0, gatavs = false;
+const speletajs = { x: 0, y: 0, w: 50, h: 50 };
+const lecienaAugstums = -12;
+const maxLecieni = 2;
+let lecieni = 0;
+let atrums = 0;
+const gravitacija = 0.5;
+
+const platformas = [];
+const krasas = [];
+for (let i = 0; i < 10; i++) {
+  platformas.push({ x: 0, y: 0, w: 100, h: 30 });
+  krasas.push("black");
+}
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function jaunaSpele() {
+  for (let i = 0; i < 10; i++) {
+    platformas[i].x = randInt(10, 690);
+    platformas[i].y = randInt(100, 760);
+    krasas[i] = "black";
+  }
+  speletajs.x = platformas[0].x;
+  speletajs.y = platformas[0].y - 50;
+  atrums = 0;
+  lecieni = 0;
+  gatavs = false;
+}
+jaunaSpele();
+
+const keys = {};
+window.addEventListener("keydown", (e) => {
+  startAudioOnce();
+  keys[e.code] = true;
+  if (e.code === "Space" && !gatavs) {
+    if (lecieni < maxLecieni) {
+      atrums = lecienaAugstums;
+      lecieni += 1;
+      leciensSkana.currentTime = 0;
+      leciensSkana.play().catch(() => {});
+    }
+    e.preventDefault();
+  }
+  if (e.code === "Digit1" && gatavs) {
+    limeni += 1;
+    jaunaSpele();
+  }
+  if (e.code === "KeyR") {
+    jaunaSpele();
+  }
+});
+window.addEventListener("keyup", (e) => { keys[e.code] = false; });
+
+function rectsOverlap(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+function loop() {
+  // Gravitāte
+  atrums += gravitacija;
+  speletajs.y += atrums;
+
+  // Izkrišana
+  if (speletajs.y > 800) {
+    kritieni += 1;
+    speletajs.x = platformas[0].x + 10;
+    speletajs.y = platformas[0].y - 60;
+    atrums = 0;
+  }
+
+  // Sadursmes
+  for (let i = 0; i < 10; i++) {
+    if (rectsOverlap(speletajs, platformas[i])) {
+      if (atrums > 0 && speletajs.y + speletajs.h <= platformas[i].y + platformas[i].h) {
+        speletajs.y = platformas[i].y - speletajs.h;
+        atrums = 0;
+        lecieni = 0;
+        krasas[i] = "red";
+      }
+    }
+  }
+
+  if (!gatavs) {
+    if (keys["ArrowLeft"] || keys["KeyA"]) speletajs.x -= 5;
+    if (keys["ArrowRight"] || keys["KeyD"]) speletajs.x += 5;
+  }
+
+  // Zīmēšana
+  ctx.fillStyle = "rgb(232,158,158)";
+  ctx.fillRect(0, 0, 800, 800);
+
+  for (let i = 0; i < 10; i++) {
+    ctx.fillStyle = krasas[i];
+    ctx.fillRect(platformas[i].x, platformas[i].y, platformas[i].w, platformas[i].h);
+  }
+
+  if (dino.complete && dino.naturalWidth > 0) {
+    ctx.drawImage(dino, speletajs.x, speletajs.y, speletajs.w, speletajs.h);
+  }
+
+  ctx.fillStyle = "black";
+  ctx.font = "24px Arial";
+  ctx.fillText(`Kritieni: ${kritieni}`, 10, 32);
+  ctx.fillText(`Līmeņi: ${limeni}`, 10, 62);
+  ctx.font = "16px Arial";
+  ctx.fillText("Spied 'r', lai restartētu līmeni!", 500, 25);
+
+  if (krasas.every(k => k === "red")) {
+    gatavs = true;
+    ctx.font = "bold 36px Arial";
+    ctx.fillText("Līmenis iziets! Spied '1'!", 180, 320);
+  }
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skolēnu Python Projektu Galerija</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --pink:#ff8fab; --peach:#ffd6a5; --lavender:#bdb2ff; --mint:#a0f0d0; --ink:#3a2e39; --card-bg:#fffdfa; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; font-family:'Nunito',sans-serif; color:var(--ink);
+    background: linear-gradient(135deg,#fff5f7 0%,#f4f0ff 50%,#f0fbf6 100%); }
+  header { text-align:center; padding:48px 20px 24px; }
+  header h1 { font-family:'Baloo 2',cursive; font-size:clamp(1.8rem,4vw,2.6rem); margin:0 0 8px; }
+  .subtitle { max-width:520px; margin:0 auto; color:#6b5f68; font-weight:600; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px;
+    max-width:900px; margin:0 auto; padding:20px 32px 60px; }
+  .card { background:var(--card-bg); border-radius:24px; overflow:hidden; box-shadow:0 8px 24px rgba(80,50,70,0.10);
+    display:flex; flex-direction:column; text-decoration:none; color:inherit; transition:transform .2s, box-shadow .2s; }
+  .card:hover { transform:translateY(-6px) rotate(-.3deg); box-shadow:0 16px 32px rgba(80,50,70,.18); }
+  .card-image { height:150px; background:linear-gradient(135deg,#fdeff2,#eee7ff); display:flex; align-items:center; justify-content:center; }
+  .card-image img { max-width:60%; max-height:60%; object-fit:contain; }
+  .card-body { padding:16px 20px 22px; }
+  .card-body h2 { font-family:'Baloo 2',cursive; font-size:1.2rem; margin:0 0 6px; }
+  .desc { font-size:.92rem; color:#5c5058; line-height:1.4; margin:0 0 10px; }
+  .play-pill { display:inline-block; background:linear-gradient(135deg,var(--pink),#ff6f91); color:white;
+    font-weight:800; padding:8px 16px; border-radius:999px; font-size:.85rem; }
+  footer { text-align:center; padding:20px; color:#9a8d95; font-size:.85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🐍 Python Projektu Galerija ✨</h1>
+  <p class="subtitle">Skaties, ko skolēni ir izveidojuši - spied uz kartītes, lai spēlētu!</p>
+</header>
+<main class="grid">
+  <a class="card" href="kafijas_aparats/index.html">
+    <div class="card-image"><img src="kafijas_aparats/kafijas_baneris.png" alt=""></div>
+    <div class="card-body">
+      <h2>☕ Kafijas Automāts</h2>
+      <p class="desc">Iemet naudu, izvēlies dzērienu un vēro animāciju!</p>
+      <span class="play-pill">▶ Spēlēt</span>
+    </div>
+  </a>
+  <a class="card" href="skaitlu_minesana/index.html">
+    <div class="card-image"><img src="skaitlu_minesana/python_logo.png" alt=""></div>
+    <div class="card-body">
+      <h2>🔢 Skaitļu Minēšana</h2>
+      <p class="desc">Uzmini datora izvēlēto skaitli no 1 līdz 100!</p>
+      <span class="play-pill">▶ Spēlēt</span>
+    </div>
+  </a>
+  <a class="card" href="platformas_spele/index.html">
+    <div class="card-image"><img src="platformas_spele/Dino1.png" alt=""></div>
+    <div class="card-body">
+      <h2>🦖 Trakie Lēcieni</h2>
+      <p class="desc">Platformu spēle!</p>
+      <span class="play-pill">▶ Spēlēt</span>
+    </div>
+  </a>
+</main>
+<footer>Pulciņu gadatirgus 2026.</footer>
+</body>
+</html>

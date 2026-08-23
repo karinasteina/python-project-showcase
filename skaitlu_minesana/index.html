@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skaitļu Minēšana</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; background: #eef1f6; font-family: Calibri, Arial, sans-serif; }
+  #logs { position: relative; width: 600px; height: 600px; background: #eef1f6; overflow: hidden; }
+  .abs { position: absolute; }
+  h1.title { top: 10px; left: 135px; font-size: 20px; font-weight: bold; margin: 0; }
+  .label2 { top: 100px; left: 40px; font-size: 14px; }
+  #rezultats { top: 100px; left: 350px; font-size: 14px; font-weight: bold; white-space: pre-line; max-width: 220px; }
+  #ievade { top: 130px; left: 45px; width: 160px; height: 22px; font-size: 12px; }
+  #pogaMinet { top: 165px; left: 100px; font-size: 14px; padding: 4px 10px; }
+  #pogaSpeletVelreiz { top: 165px; left: 400px; font-size: 14px; padding: 4px 10px; }
+  #minejumuSkaitsUzraksts { top: 230px; left: 40px; font-size: 14px; }
+  .divider { top: 300px; left: 0; width: 600px; height: 2px; background: #000; }
+  #statistika1 { top: 330px; left: 150px; font-size: 12px; }
+  #statistika2 { top: 355px; left: 150px; font-size: 12px; }
+  #statistika3 { top: 380px; left: 130px; font-size: 12px; }
+  #statistika4 { top: 405px; left: 115px; font-size: 12px; }
+  .logoRow { top: 450px; left: 10px; display: flex; gap: 20px; }
+  .logoRow img { width: 100px; height: 100px; }
+  button { cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="logs">
+  <h1 class="title abs">Uzmini skaitli no 1 līdz 100</h1>
+  <div class="label2 abs">Raksti savu minējumu</div>
+  <div id="rezultats" class="abs">Raksti skaitli un spied 'Minēt'
+Šeit būs padomi!</div>
+
+  <input id="ievade" class="abs" type="text">
+  <button id="pogaMinet" class="abs">Minēt</button>
+  <button id="pogaSpeletVelreiz" class="abs" disabled>Spēlēt vēlreiz</button>
+
+  <div id="minejumuSkaitsUzraksts" class="abs">Mēģinājumu skaits: 0</div>
+  <div class="divider abs"></div>
+
+  <div id="statistika1" class="abs">Atminēti skaitļi līdz 3 mēģinājumiem: 0</div>
+  <div id="statistika2" class="abs">Atminēti skaitļi līdz 5 mēģinājumiem: 0</div>
+  <div id="statistika3" class="abs">Atminēti skaitļi no 5 līdz 10 mēģinājumiem: 0</div>
+  <div id="statistika4" class="abs">Atminēti skaitļi ar vairāk par 10 mēģinājumiem: 0</div>
+
+  <div class="logoRow abs">
+    <img src="python_logo.png"><img src="python_logo.png"><img src="python_logo.png">
+    <img src="python_logo.png"><img src="python_logo.png"><img src="python_logo.png">
+  </div>
+</div>
+
+<script>
+let speletajaMinejums = 0;
+let datoraSkaitlis = Math.floor(Math.random() * 100) + 1;
+let minejumi = 0;
+let lidz3 = 0, lidz5 = 0, lidz10 = 0, virs10 = 0;
+
+const ievade = document.getElementById("ievade");
+const rezultats = document.getElementById("rezultats");
+const minejumuSkaitsUzraksts = document.getElementById("minejumuSkaitsUzraksts");
+const pogaMinet = document.getElementById("pogaMinet");
+const pogaSpeletVelreiz = document.getElementById("pogaSpeletVelreiz");
+const statistika1 = document.getElementById("statistika1");
+const statistika2 = document.getElementById("statistika2");
+const statistika3 = document.getElementById("statistika3");
+const statistika4 = document.getElementById("statistika4");
+
+function spele() {
+  const raw = ievade.value;
+  speletajaMinejums = parseInt(raw, 10);
+
+  if (raw.trim() === "" || isNaN(speletajaMinejums)) {
+    rezultats.textContent = "Nav ievadīts pareizs skaitlis!";
+    ievade.value = "";
+    return;
+  }
+
+  if (speletajaMinejums === datoraSkaitlis) {
+    minejumi += 1;
+    minejumuSkaitsUzraksts.textContent = `Mēģinājumu skaits: ${minejumi}`;
+    rezultats.textContent = `Pareizi! Tu uzminēji manu \nskaitli ar ${minejumi} mēģinājumiem!`;
+    pogaMinet.disabled = true;
+    pogaSpeletVelreiz.disabled = false;
+    if (minejumi < 3) {
+      lidz3 += 1;
+      statistika1.textContent = `Atminēti skaitļi līdz 3 mēģinājumiem: ${lidz3}`;
+    } else if (minejumi < 5) {
+      lidz5 += 1;
+      statistika2.textContent = `Atminēti skaitļi līdz 5 mēģinājumiem: ${lidz5}`;
+    } else if (minejumi >= 5 && minejumi <= 10) {
+      lidz10 += 1;
+      statistika3.textContent = `Atminēti skaitļi no 5 līdz 10 mēģinājumiem: ${lidz10}`;
+    } else {
+      virs10 += 1;
+      statistika4.textContent = `Atminēti skaitļi ar vairāk par 10 mēģinājumiem: ${virs10}`;
+    }
+  } else if (speletajaMinejums < datoraSkaitlis && speletajaMinejums > 0) {
+    minejumi += 1;
+    rezultats.textContent = "Mans skaitlis ir LIELĀKS!";
+    minejumuSkaitsUzraksts.textContent = `Mēģinājumu skaits: ${minejumi}`;
+  } else if (speletajaMinejums > datoraSkaitlis && speletajaMinejums < 101) {
+    minejumi += 1;
+    rezultats.textContent = "Mans skaitlis ir MAZĀKS!";
+    minejumuSkaitsUzraksts.textContent = `Mēģinājumu skaits: ${minejumi}`;
+  } else {
+    rezultats.textContent = "Nav ievadīts pareizs skaitlis!";
+  }
+  ievade.value = "";
+}
+
+function jaunaSpele() {
+  minejumi = 0;
+  datoraSkaitlis = Math.floor(Math.random() * 100) + 1;
+  pogaMinet.disabled = false;
+  pogaSpeletVelreiz.disabled = true;
+  minejumuSkaitsUzraksts.textContent = `Mēģinājumu skaits: ${minejumi}`;
+  rezultats.textContent = "Raksti skaitli un spied 'Minēt'\nŠeit būs padomi!";
+  ievade.value = "";
+}
+
+pogaMinet.addEventListener("click", spele);
+pogaSpeletVelreiz.addEventListener("click", jaunaSpele);
+ievade.addEventListener("keydown", (e) => { if (e.key === "Enter" && !pogaMinet.disabled) spele(); });
+</script>
+</body>
+</html>

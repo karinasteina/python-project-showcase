@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kafijas Automāts</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background: #f2eee8;
+    font-family: Arial, sans-serif;
+  }
+  #logs {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    background: #f2eee8;
+    overflow: hidden;
+  }
+  .abs { position: absolute; }
+  #baneris { top: 2px; left: 5px; width: 490px; height: 130px; object-fit: cover; border-radius: 6px; }
+  #virsraksts { top: 150px; left: 100px; font-size: 20px; font-weight: bold; }
+  button {
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    border: 1px solid #888;
+    background: white;
+  }
+  #naudasPoga { top: 320px; left: 350px; width: 70px; height: 26px; font-size: 16px; border-width: 3px; border-style: solid; }
+  .dzerienuPoga { top: 0; left: 0; width: 100px; height: 26px; font-size: 12px; }
+  #kruzitesPoga {
+    top: 530px; left: 50px; width: 200px; height: 100px;
+    background: white; display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  #kruzitesPoga img { max-width: 90px; max-height: 90px; display: none; }
+  #laukums {
+    top: 200px; left: 280px; width: 200px; height: 100px;
+    background: white; border: 1px solid #ccc;
+  }
+  #laukumsTeksts { font-size: 16px; color: black; text-align: center; padding-top: 40px; }
+  #animBar { position: absolute; top: 20px; left: 10px; height: 30px; width: 0; background: blue; }
+</style>
+</head>
+<body>
+<div id="logs">
+  <img id="baneris" class="abs" src="kafijas_baneris.png" alt="Baneris">
+  <div id="virsraksts" class="abs">Python skolas I kafija</div>
+
+  <button id="naudasPoga" class="abs">$</button>
+
+  <button class="abs dzerienuPoga" style="left:50px; top:390px;" data-i="1">Melna kafija</button>
+  <button class="abs dzerienuPoga" style="left:150px; top:390px;" data-i="2">Balta kafija</button>
+  <button class="abs dzerienuPoga" style="left:50px; top:425px;" data-i="3">Kapučīno</button>
+  <button class="abs dzerienuPoga" style="left:150px; top:425px;" data-i="4">Šokolāde</button>
+  <button class="abs dzerienuPoga" style="left:50px; top:460px;" data-i="5">Buljons</button>
+  <button class="abs dzerienuPoga" style="left:150px; top:460px;" data-i="6">Īru šokolāde</button>
+  <button class="abs dzerienuPoga" style="left:50px; top:495px;" data-i="7">Tēja</button>
+  <button class="abs dzerienuPoga" style="left:150px; top:495px;" data-i="8">Mokačīno</button>
+
+  <button id="kruzitesPoga" class="abs">
+    <img id="kruziteImg" src="kafijas_kruzite.png" alt="Krūzīte">
+  </button>
+
+  <div id="laukums" class="abs">
+    <div id="laukumsTeksts">Iemetiet naudu!</div>
+    <div id="animBar"></div>
+  </div>
+</div>
+
+<script>
+let iemestaNauda = false;
+let progress = 0;
+let animInterval = null;
+
+const laukumsTeksts = document.getElementById("laukumsTeksts");
+const animBar = document.getElementById("animBar");
+const naudasPoga = document.getElementById("naudasPoga");
+const kruziteImg = document.getElementById("kruziteImg");
+const dzerienuPogas = document.querySelectorAll(".dzerienuPoga");
+
+function setLaukums(text, showBar) {
+  laukumsTeksts.textContent = text;
+  animBar.style.width = showBar ? animBar.style.width : "0px";
+  animBar.style.display = showBar ? "block" : "none";
+}
+
+naudasPoga.addEventListener("click", () => {
+  iemestaNauda = true;
+  setLaukums("Izvēlieties dzērienu!", false);
+});
+
+function animacija() {
+  progress = 0;
+  animBar.style.display = "block";
+  laukumsTeksts.textContent = "";
+  animInterval = setInterval(() => {
+    progress += 4;
+    animBar.style.width = Math.min(progress, 180) + "px";
+    if (progress >= 180) {
+      clearInterval(animInterval);
+      animBar.style.display = "none";
+      setLaukums("Paņemiet dzērienu!", false);
+      dzerienuPogas.forEach(p => { p.style.background = "white"; p.style.color = "black"; });
+      kruziteImg.style.display = "block";
+    }
+  }, 40); // ~10 soļi/sek, līdzīgi oriģinālajam logs.after(100, ...) ar +2px/solī pielāgotam 180px robežai
+}
+
+dzerienuPogas.forEach(poga => {
+  poga.addEventListener("click", () => {
+    if (iemestaNauda) {
+      poga.style.background = "black";
+      poga.style.color = "white";
+      naudasPoga.disabled = true;
+      animacija();
+      iemestaNauda = false;
+    }
+  });
+});
+
+document.getElementById("kruzitesPoga").addEventListener("click", () => {
+  kruziteImg.style.display = "none";
+  naudasPoga.disabled = false;
+  setLaukums("Iemetiet naudu!", false);
+});
+</script>
+</body>
+</html>
